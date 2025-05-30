@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">Performans Takip</string>
+    
+    <!-- Ana Ekran -->
+    <string name="title_performance_record">Performans Kaydı</string>
+    <string name="hint_date">Tarih</string>
+    <string name="hint_employee">Çalışan</string>
+    <string name="hint_work_type">İşlem Türü</string>
+    <string name="hint_amount">Miktar</string>
+    <string name="hint_unit">Birim</string>
+    <string name="hint_description">Açıklama (İsteğe bağlı)</string>
+    <string name="btn_send_whatsapp">WhatsApp\'a Gönder</string>
+    
+    <!-- Özet Ekranı -->
+    <string name="title_dashboard">Özet</string>
+    <string name="active_employees">Aktif Çalışanlar</string>
+    <string name="work_types">İşlem Türleri</string>
+    <string name="units">Birimler</string>
+    <string name="records">Kayıtlar</string>
+    <string name="recent_records">Son Kayıtlar</string>
+    <string name="no_records">Henüz kayıt yok</string>
+    
+    <!-- Ayarlar Ekranı -->
+    <string name="title_settings">Ayarlar</string>
+    <string name="admin_login">Yönetici Girişi</string>
+    <string name="hint_password">Şifre</string>
+    <string name="btn_login">Giriş</string>
+    <string name="wrong_password">Hatalı şifre</string>
+    
+    <string name="departments">Bölümler</string>
+    <string name="hint_department_name">Bölüm Adı</string>
+    <string name="hint_responsible_person">Sorumlu Kişi</string>
+    <string name="btn_add_department">Bölüm Ekle</string>
+    
+    <string name="work_type_management">İşlem Türleri Yönetimi</string>
+    <string name="hint_work_type_name">İşlem Türü Adı</string>
+    <string name="hint_work_unit">İşlem Birimi</string>
+    <string name="btn_add_work_type">İşlem Türü Ekle</string>
+    
+    <string name="data_management">Veri Yönetimi</string>
+    <string name="btn_export_csv">CSV Dışa Aktar</string>
+    <string name="btn_import_csv">CSV İçe Aktar</string>
+    <string name="btn_delete_all_data">Tüm Verileri Sil</string>
+    
+    <!-- Navigasyon -->
+    <string name="nav_record">Kayıt</string>
+    <string name="nav_dashboard">Özet</string>
+    <string name="nav_settings">Ayarlar</string>
+    <string name="nav_exit">Çıkış</string>
+    
+    <!-- Mesajlar -->
+    <string name="fill_required_fields">Lütfen tüm gerekli alanları doldurun</string>
+    <string name="valid_amount">Geçerli bir miktar girin</string>
+    <string name="record_saved">Kayıt başarıyla kaydedildi</string>
+    <string name="record_failed">Kayıt kaydedilemedi</string>
+    <string name="whatsapp_not_found">WhatsApp bulunamadı</string>
+    <string name="csv_exported">CSV dosyası dışa aktarıldı</string>
+    <string name="csv_import_error">CSV içe aktarılırken hata oluştu veya boş dosya</string>
+    <string name="all_data_deleted">Tüm veriler silindi</string>
+    <string name="item_deleted">Öğe silindi</string>
+    <string name="yes">Evet</string>
+    <string name="no">Hayır</string>
+</resources>

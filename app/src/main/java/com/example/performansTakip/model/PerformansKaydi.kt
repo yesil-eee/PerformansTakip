@@ -1,4 +1,4 @@
-package com.example.performanstakip.model
+package com.example.performansTakip.model
 
 data class PerformansKaydi(
     val id: Long = 0,
@@ -32,14 +32,14 @@ data class PerformansKaydi(
         fun csvDizgisindenOlustur(csvDizgisi: String): PerformansKaydi? {
             return try {
                 val parcalar = csvDizgisi.split(";")
-                if (parcalar.size >= 15) {
+                if (parcalar.size >= 5) {
                     PerformansKaydi(
                         tarih = parcalar[0],
                         calisanAdi = parcalar[1],
                         islemTuru = parcalar[2],
                         miktar = parcalar[3].toDouble(),
                         birim = parcalar[4],
-                        aciklama = if (parcalar.size > 15) parcalar[15] else ""
+                        aciklama = if (parcalar.size > 5) parcalar[5] else ""
                     )
                 } else null
             } catch (e: Exception) {

@@ -1,4 +1,4 @@
-package com.example.performanstakip.ui
+package com.example.performansTakip.ui
 
 import android.app.Activity
 import android.content.Intent
@@ -19,13 +19,13 @@ import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.example.performanstakip.R
+import com.example.performansTakip.R
 
-import com.example.performanstakip.model.Bolum
-import com.example.performanstakip.model.Calisan
-import com.example.performanstakip.model.IslemTuru
-import com.example.performanstakip.util.CSVYardimcisi
-import com.example.performanstakip.util.VeritabaniYardimcisi
+import com.example.performansTakip.model.Bolum
+import com.example.performansTakip.model.Calisan
+import com.example.performansTakip.model.IslemTuru
+import com.example.performansTakip.util.CSVYardimcisi
+import com.example.performansTakip.util.VeritabaniYardimcisi
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.google.android.material.button.MaterialButton
 import com.google.android.material.textfield.TextInputEditText
@@ -35,7 +35,7 @@ class AyarlarActivity : AppCompatActivity() {
     
     private companion object {
         const val VARSAYILAN_SIFRE = "admin123"
-        const val GELISTIRICI_ADI = "Mehmet KIRAN"
+        const val GELISTIRICI_ADI = "İlyas Yeşil"
     }
     
     private lateinit var veritabaniYardimcisi: VeritabaniYardimcisi

@@ -1,4 +1,4 @@
-package com.example.performanstakip.model
+package com.example.performansTakip.model
 
 data class Calisan(
     val id: Long = 0,

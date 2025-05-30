@@ -1,4 +1,4 @@
-package com.example.performanstakip.model
+package com.example.performansTakip.model
 
 data class IslemTuru(
     val id: Long = 0,

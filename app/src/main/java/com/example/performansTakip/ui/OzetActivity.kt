@@ -1,4 +1,4 @@
-package com.example.performanstakip.ui
+package com.example.performansTakip.ui
 
 import android.content.Intent
 import android.os.Bundle
@@ -9,9 +9,9 @@ import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.example.performanstakip.R
-import com.example.performanstakip.model.PerformansKaydi
-import com.example.performanstakip.util.VeritabaniYardimcisi
+import com.example.performansTakip.R
+import com.example.performansTakip.model.PerformansKaydi
+import com.example.performansTakip.util.VeritabaniYardimcisi
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import android.app.Activity
 import androidx.activity.result.ActivityResultLauncher
@@ -37,8 +37,12 @@ class OzetActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_ozet)
         tvGelistiriciAdi = findViewById(R.id.tvGelistiriciAdi)
-
-
+        
+        // Geliştirici adını ayarla
+        val sharedPreferences = getSharedPreferences("ayarlar", MODE_PRIVATE)
+        val gelistiriciAdi = sharedPreferences.getString("gelistirici_adi", "İlyas Yeşil") ?: "İlyas Yeşil"
+        tvGelistiriciAdi.text = gelistiriciAdi
+        
         viewlariBaslat()
         veritabaniniBaslat()
         recyclerViewAyarla()

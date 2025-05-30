@@ -1,4 +1,4 @@
-package com.example.performanstakip.ui
+package com.example.performansTakip.ui
 
 import android.app.DatePickerDialog
 import android.content.Intent
@@ -12,11 +12,11 @@ import android.widget.AutoCompleteTextView
 import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
-import com.example.performanstakip.R
-import com.example.performanstakip.model.Calisan
-import com.example.performanstakip.model.IslemTuru
-import com.example.performanstakip.model.PerformansKaydi
-import com.example.performanstakip.util.VeritabaniYardimcisi
+import com.example.performansTakip.R
+import com.example.performansTakip.model.Calisan
+import com.example.performansTakip.model.IslemTuru
+import com.example.performansTakip.model.PerformansKaydi
+import com.example.performansTakip.util.VeritabaniYardimcisi
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.google.android.material.button.MaterialButton
 import com.google.android.material.textfield.TextInputEditText

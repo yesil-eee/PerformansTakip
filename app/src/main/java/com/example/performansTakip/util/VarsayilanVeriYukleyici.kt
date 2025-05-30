@@ -1,8 +1,9 @@
-package com.example.performanstakip.util
+package com.example.performansTakip.util
 
 import android.content.Context
-import com.example.performanstakip.model.Calisan
-import com.example.performanstakip.model.IslemTuru
+import com.example.performansTakip.model.Calisan
+import com.example.performansTakip.model.IslemTuru
+import com.example.performansTakip.util.VeritabaniYardimcisi
 import java.io.BufferedReader
 import java.io.InputStreamReader
 
@@ -49,7 +50,7 @@ class VarsayilanVeriYukleyici(private val context: Context) {
         
         // Veritabanına ekle
         var eklenenKayitSayisi = 0
-        islemTurleri.forEach { islemTuru ->
+        islemTurleri.forEach<IslemTuru> { islemTuru ->
             val id = veritabaniYardimcisi.islemTuruEkle(islemTuru)
             if (id > 0) eklenenKayitSayisi++
         }
@@ -96,7 +97,7 @@ class VarsayilanVeriYukleyici(private val context: Context) {
         
         // Veritabanına ekle
         var eklenenKayitSayisi = 0
-        calisanlar.forEach { calisan ->
+        calisanlar.forEach<Calisan> { calisan ->
             val id = veritabaniYardimcisi.calisanEkle(calisan)
             if (id > 0) eklenenKayitSayisi++
         }
@@ -114,6 +115,6 @@ class VarsayilanVeriYukleyici(private val context: Context) {
         sonuclar["islemTurleri"] = islemTurleriniYukle()
         sonuclar["calisanlar"] = calisanlariYukle()
         
-        return sonuclar
+        return sonuclar as Map<String, Int>
     }
 }

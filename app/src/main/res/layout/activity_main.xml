@@ -169,7 +169,7 @@
         android:id="@+id/tvDeveloperInfo"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Developed by: Mehmet KIRAN"
+        android:text="Developed by: İlyas Yeşil"
         android:textSize="10sp"
         android:textColor="@android:color/darker_gray"
         android:layout_marginBottom="4dp"

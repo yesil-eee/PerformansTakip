@@ -1,13 +1,13 @@
-package com.example.performanstakip.util
+package com.example.performansTakip.util
 
 import android.content.ContentValues
 import android.content.Context
 import android.database.sqlite.SQLiteDatabase
 import android.database.sqlite.SQLiteOpenHelper
-import com.example.performanstakip.model.Bolum
-import com.example.performanstakip.model.Calisan
-import com.example.performanstakip.model.IslemTuru
-import com.example.performanstakip.model.PerformansKaydi
+import com.example.performansTakip.model.Bolum
+import com.example.performansTakip.model.Calisan
+import com.example.performansTakip.model.IslemTuru
+import com.example.performansTakip.model.PerformansKaydi
 
 class VeritabaniYardimcisi(context: Context) : SQLiteOpenHelper(context, VERITABANI_ADI, null, VERITABANI_VERSIYONU) {
     

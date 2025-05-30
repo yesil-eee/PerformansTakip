@@ -7,7 +7,7 @@ android {
     compileSdk 34
 
     defaultConfig {
-        applicationId "com.example.performansTakip"
+        applicationId "com.ilyas.PerformansTakip"
         minSdk 24
         targetSdk 34
         versionCode 1

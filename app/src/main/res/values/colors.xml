@@ -1,14 +1,22 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="colorPrimary">#2196F3</color>
-    <color name="colorPrimaryDark">#1976D2</color>
-    <color name="colorAccent">#03A9F4</color>
-    <color name="colorBackground">#F5F5F5</color>
+    <!-- Yeni Modern Renk Şeması -->
+    <color name="colorPrimary">#4A6572</color>
+    <color name="colorPrimaryDark">#344955</color>
+    <color name="colorAccent">#F9AA33</color>
+    <color name="colorBackground">#F5F9FC</color>
     <color name="colorCardBackground">#FFFFFF</color>
-    <color name="colorText">#212121</color>
-    <color name="colorSecondaryText">#757575</color>
-    <color name="colorDivider">#BDBDBD</color>
-    <color name="colorSuccess">#4CAF50</color>
-    <color name="colorError">#F44336</color>
-    <color name="colorWarning">#FFC107</color>
+    <color name="colorText">#232F34</color>
+    <color name="colorSecondaryText">#4A6572</color>
+    <color name="colorDivider">#E0E0E0</color>
+    <color name="colorSuccess">#5AB159</color>
+    <color name="colorError">#FF5252</color>
+    <color name="colorWarning">#FFB74D</color>
+    
+    <!-- Yeni Eklenen Vurgu Renkleri -->
+    <color name="colorHighlight">#F9AA33</color>
+    <color name="colorLightAccent">#FFEFD1</color>
+    <color name="colorDarkAccent">#E58D11</color>
+    <color name="colorGradientStart">#344955</color>
+    <color name="colorGradientEnd">#4A6572</color>
 </resources>

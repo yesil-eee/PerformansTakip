@@ -28,17 +28,8 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintBottom_toBottomOf="@id/headerBg" />
-        
-    <ImageView
-        android:id="@+id/ivAppLogo"
-        android:layout_width="32dp"
-        android:layout_height="32dp"
-        android:layout_marginEnd="16dp"
-        android:src="@drawable/pages"
-        app:tint="@color/colorAccent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="@id/headerBg"
-        app:layout_constraintBottom_toBottomOf="@id/headerBg" />
+
+    <!-- Sarı icon kaldırıldı -->
         
     <androidx.cardview.widget.CardView
         android:id="@+id/cvPerformansKaydi"
@@ -60,30 +51,15 @@
             android:padding="16dp"
             android:background="@color/colorCardBackground">
 
-            <LinearLayout
+            <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:orientation="horizontal"
-                android:gravity="center_vertical"
-                android:layout_marginBottom="12dp">
-                
-                <ImageView
-                    android:layout_width="32dp"
-                    android:layout_height="32dp"
-                    android:src="@drawable/icons8_apple_news_30"
-                    app:tint="@color/colorAccent"
-                    android:layout_marginEnd="8dp" />
-                    
-                <TextView
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:text="@string/title_performance_record"
-                    android:textColor="@color/colorPrimary"
-                    android:textSize="18sp"
-                    android:textStyle="bold"
-                    android:layout_marginTop="4dp"
-                    android:layout_marginBottom="12dp" />
-            </LinearLayout>
+                android:text="@string/title_performance_record"
+                android:textColor="@color/colorPrimary"
+                android:textSize="18sp"
+                android:textStyle="bold"
+                android:layout_marginTop="4dp"
+                android:layout_marginBottom="12dp" />
 
             <com.google.android.material.textfield.TextInputLayout
                 android:layout_width="match_parent"
@@ -103,7 +79,7 @@
             <com.google.android.material.textfield.TextInputLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginBottom="8dp"
+                android:layout_marginBottom="2dp"
                 style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.ExposedDropdownMenu">
 
                 <AutoCompleteTextView
@@ -113,6 +89,17 @@
                     android:hint="Bölüm Seçin"
                     android:inputType="text" />
             </com.google.android.material.textfield.TextInputLayout>
+            
+            <TextView
+                android:id="@+id/tvBolumSorumlusu"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text=""
+                android:textSize="12sp"
+                android:textColor="@color/colorSecondaryText"
+                android:layout_marginStart="4dp"
+                android:layout_marginBottom="8dp"
+                android:visibility="gone" />
 
             <com.google.android.material.textfield.TextInputLayout
                 android:layout_width="match_parent"

@@ -387,7 +387,7 @@ class VeritabaniYardimcisi(context: Context) : SQLiteOpenHelper(context, VERITAB
             null,
             null,
 
-            KOLON_BOLUM_ADI
+            "$KOLON_BOLUM_ADI ASC"
         )
         
         with(cursor) {
@@ -402,6 +402,26 @@ class VeritabaniYardimcisi(context: Context) : SQLiteOpenHelper(context, VERITAB
         }
         cursor.close()
         return bolumler
+    }
+    
+    fun bolumSorumlusuGetir(bolumAdi: String): String {
+        val db = readableDatabase
+        val cursor = db.query(
+            TABLO_BOLUMLER,
+            arrayOf(KOLON_SORUMLU_KISI),
+            "$KOLON_BOLUM_ADI = ?",
+            arrayOf(bolumAdi),
+            null,
+            null,
+            null
+        )
+        
+        var sorumluKisi = ""
+        if (cursor.moveToFirst()) {
+            sorumluKisi = cursor.getString(cursor.getColumnIndexOrThrow(KOLON_SORUMLU_KISI))
+        }
+        cursor.close()
+        return sorumluKisi
     }
     
     fun bolumEkle(bolum: Bolum): Long {

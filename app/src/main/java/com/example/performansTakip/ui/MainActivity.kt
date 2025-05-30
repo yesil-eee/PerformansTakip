@@ -11,6 +11,7 @@ import android.widget.ArrayAdapter
 import android.widget.AutoCompleteTextView
 import android.widget.TextView
 import android.widget.Toast
+import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import com.example.performansTakip.R
 import com.example.performansTakip.model.Calisan
@@ -23,6 +24,7 @@ import com.google.android.material.textfield.TextInputEditText
 import java.text.SimpleDateFormat
 import java.util.*
 import android.content.Context
+import androidx.appcompat.app.AppCompatDelegate
 
 class MainActivity : AppCompatActivity() {
     
@@ -38,6 +40,7 @@ class MainActivity : AppCompatActivity() {
     private lateinit var etAciklama: TextInputEditText
     private lateinit var btnWhatsAppGonder: MaterialButton
     private lateinit var bottomNavigation: BottomNavigationView
+    private lateinit var tvBolumSorumlusu: TextView
     
     private var seciliTarih = ""
     private var islemTurleri = listOf<IslemTuru>()
@@ -47,42 +50,82 @@ class MainActivity : AppCompatActivity() {
     
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        // ActionBar başlığını gizle
-        supportActionBar?.hide()
-        setContentView(R.layout.activity_main)
         
-        viewlariBaslat()
-        veritabaniniBaslat()
-        dinleyicileriAyarla()
-        verileriYukle()
-        autoCompleteViewlariAyarla()
-        firmaAdiniGoster()
+        // Aydınlık modu zorla - karanlık mod kapalı
+        AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO)
+        
+        try {
+            // Önce SharedPreferences'i başlat - her şeyden önce olmalı
+            sharedPreferences = getSharedPreferences("performans_takip", Context.MODE_PRIVATE)
+            
+            // ActionBar başlığını gizle
+            supportActionBar?.hide()
+            
+            // Layout'u ayarla
+            setContentView(R.layout.activity_main)
+            
+            // Sırayla başlatma işlemlerini yap
+            viewlariBaslat()
+            veritabaniniBaslat()
+            dinleyicileriAyarla()
+            verileriYukle()
+            autoCompleteViewlariAyarla()
+            firmaAdiniGoster()
+            
+            // Başlarıyla başlatıldı - toast mesajı kaldırıldı
+        } catch (e: Exception) {
+            // Kritik bir hata oluşursa kullanıcıya bildir
+            Toast.makeText(this, "Uygulama başlatılırken hata oluştu: ${e.message}", Toast.LENGTH_LONG).show()
+            android.util.Log.e("MainActivity", "Başlatma hatası: ${e.message}", e)
+        }
     }
     
     private fun viewlariBaslat() {
-        etTarih = findViewById(R.id.etTarih)
-        actvBolum = findViewById(R.id.actvBolum)
-        actvCalisan = findViewById(R.id.actvCalisan)
-        actvIslemTuru = findViewById(R.id.actvIslemTuru)
-        etMiktar = findViewById(R.id.etMiktar)
-        etBirim = findViewById(R.id.etBirim)
-        etAciklama = findViewById(R.id.etAciklama)
-        btnWhatsAppGonder = findViewById(R.id.btnWhatsAppGonder)
-        bottomNavigation = findViewById(R.id.bottomNavigation)
-        
-        sharedPreferences = getSharedPreferences("app_prefs", MODE_PRIVATE)
+        try {
+            // Tüm viewları başlat
+            etTarih = findViewById(R.id.etTarih) ?: throw NullPointerException("etTarih bulunamadı")
+            actvBolum = findViewById(R.id.actvBolum) ?: throw NullPointerException("actvBolum bulunamadı")
+            actvCalisan = findViewById(R.id.actvCalisan) ?: throw NullPointerException("actvCalisan bulunamadı")
+            actvIslemTuru = findViewById(R.id.actvIslemTuru) ?: throw NullPointerException("actvIslemTuru bulunamadı")
+            etMiktar = findViewById(R.id.etMiktar) ?: throw NullPointerException("etMiktar bulunamadı")
+            etBirim = findViewById(R.id.etBirim) ?: throw NullPointerException("etBirim bulunamadı")
+            etAciklama = findViewById(R.id.etAciklama) ?: throw NullPointerException("etAciklama bulunamadı")
+            btnWhatsAppGonder = findViewById(R.id.btnWhatsAppGonder) ?: throw NullPointerException("btnWhatsAppGonder bulunamadı")
+            bottomNavigation = findViewById(R.id.bottomNavigation) ?: throw NullPointerException("bottomNavigation bulunamadı")
+            tvBolumSorumlusu = findViewById(R.id.tvBolumSorumlusu) ?: throw NullPointerException("tvBolumSorumlusu bulunamadı")
+            
+            // Görünüm ayarları
+            etTarih.isFocusable = false // Klavye açılmasını engelle
+            
+            android.util.Log.d("MainActivity", "Tüm viewlar başarıyla başlatıldı")
+        } catch (e: Exception) {
+            android.util.Log.e("MainActivity", "Viewlar başlatılırken hata: ${e.message}", e)
+            throw e
+        }
     }
     
     private fun firmaAdiniGoster() {
-        val firmaAdi = sharedPreferences.getString("firma_ismi", "")
-        if (!firmaAdi.isNullOrEmpty()) {
-            val tvFirmaAdi = findViewById<TextView>(R.id.tvFirmaAdi)
-            tvFirmaAdi.text = firmaAdi
+        try {
+            val firmaAdi = sharedPreferences.getString("firma_ismi", "")
+            if (!firmaAdi.isNullOrEmpty()) {
+                val tvFirmaAdi = findViewById<TextView>(R.id.tvFirmaAdi)
+                tvFirmaAdi.text = firmaAdi
+                android.util.Log.d("MainActivity", "Firma adı gösterildi: $firmaAdi")
+            }
+        } catch (e: Exception) {
+            android.util.Log.e("MainActivity", "Firma adı gösterilirken hata: ${e.message}")
         }
     }
     
     private fun veritabaniniBaslat() {
-        veritabaniYardimcisi = VeritabaniYardimcisi(this)
+        try {
+            veritabaniYardimcisi = VeritabaniYardimcisi(this)
+            android.util.Log.d("MainActivity", "Veritabanı başarıyla başlatıldı")
+        } catch (e: Exception) {
+            android.util.Log.e("MainActivity", "Veritabanı başlatılırken hata: ${e.message}", e)
+            // Sadece kritik hata olduğunda kullanıcıya göster
+            throw e
+        }
     }
     
     private fun dinleyicileriAyarla() {
@@ -91,25 +134,38 @@ class MainActivity : AppCompatActivity() {
         }
         
         // Bölüm seçildiğinde çalışanları filtrele
-        actvBolum.setOnItemClickListener { _, _, _, _ ->
-            val seciliBolum = actvBolum.text.toString()
-            if (seciliBolum.isNotEmpty()) {
-                // Seçilen bölümü kaydet
-                sharedPreferences.edit().putString("son_bolum", seciliBolum).apply()
-                
-                // Çalışanları filtrele
-                filtrelenmisCalısanlar = tumCalisanlar.filter { it.bolum == seciliBolum }
-                
-                // Filtrelenmiş çalışanlar için adapter güncelle
-                val calisanAdapter = ArrayAdapter(
-                    this,
-                    android.R.layout.simple_dropdown_item_1line,
-                    filtrelenmisCalısanlar.map { it.ad }
-                )
-                actvCalisan.setAdapter(calisanAdapter)
-                actvCalisan.setText("") // Çalışan seçimini sıfırla
+        actvBolum.setOnItemClickListener { _, _, position, _ ->
+            val seciliBolum = actvBolum.adapter.getItem(position) as String
+            
+            // Bölüme göre çalışanları filtrele
+            filtrelenmisCalısanlar = tumCalisanlar.filter { it.bolum == seciliBolum }
+            
+            // Çalışan adapterını güncelle
+            val calisanAdapter = ArrayAdapter(
+                this,
+                android.R.layout.simple_dropdown_item_1line,
+                filtrelenmisCalısanlar.map { it.ad }
+            )
+            actvCalisan.setAdapter(calisanAdapter)
+            
+            // Bölüm sorumlusunu göster
+            val bolumSorumlusu = veritabaniYardimcisi.bolumSorumlusuGetir(seciliBolum)
+            if (bolumSorumlusu.isNotEmpty()) {
+                tvBolumSorumlusu.text = "Sorumlu: $bolumSorumlusu"
+                tvBolumSorumlusu.visibility = View.VISIBLE
+            } else {
+                tvBolumSorumlusu.visibility = View.GONE
             }
-            klavyeyiGizle()
+            
+            // Son seçilen bölümü kaydet
+            sharedPreferences.edit().putString("son_bolum", seciliBolum).apply()
+            
+            // Eğer önceden seçili bir çalışan varsa ve artık listede değilse, çalışan seçimini temizle
+            val sonCalisan = sharedPreferences.getString("son_calisan", "")
+            if (!sonCalisan.isNullOrEmpty() && filtrelenmisCalısanlar.none { it.ad == sonCalisan }) {
+                actvCalisan.text.clear()
+                sharedPreferences.edit().remove("son_calisan").apply()
+            }
         }
         
         actvIslemTuru.setOnItemClickListener { _, _, _, _ ->
@@ -143,13 +199,14 @@ class MainActivity : AppCompatActivity() {
         }
         
         btnWhatsAppGonder.setOnClickListener {
+            klavyeyiGizle()
             whatsAppGonder()
         }
         
-        bottomNavigation.setOnItemSelectedListener { item ->
-            when (item.itemId) {
+        bottomNavigation.setOnItemSelectedListener { menuItem ->
+            when (menuItem.itemId) {
                 R.id.nav_kayit -> {
-                    // Zaten MainActivity'deyiz
+                    // Zaten bu ekrandayız, bir şey yapmaya gerek yok
                     true
                 }
                 R.id.nav_ozet -> {
@@ -161,7 +218,7 @@ class MainActivity : AppCompatActivity() {
                     true
                 }
                 R.id.nav_cikis -> {
-                    finishAffinity() // Uygulamadan tamamen çıkış için
+                    cikisOnayDiyaloguGoster()
                     true
                 }
                 else -> false
@@ -170,57 +227,163 @@ class MainActivity : AppCompatActivity() {
     }
     
     private fun verileriYukle() {
-        islemTurleri = veritabaniYardimcisi.tumIslemTurleriniGetir()
-        tumCalisanlar = veritabaniYardimcisi.tumCalisanlariGetir()
-        bolumler = veritabaniYardimcisi.tumBolumleriGetir().map { it.ad }
-        
-        // En son seçilen çalışanı ve bölümü otomatik olarak seç
-        val sonCalisan = sharedPreferences.getString("son_calisan", "")
-        val sonBolum = sharedPreferences.getString("son_bolum", "")
-        
-        if (!sonBolum.isNullOrEmpty()) {
-            actvBolum.setText(sonBolum)
-            // Bölüme göre çalışanları filtrele
-            filtrelenmisCalısanlar = tumCalisanlar.filter { it.bolum == sonBolum }
-        } else {
-            filtrelenmisCalısanlar = tumCalisanlar
+        try {
+            android.util.Log.d("MainActivity", "verileriYukle başlıyor")
+            
+            // İşlem türlerini yükle
+            islemTurleri = try {
+                veritabaniYardimcisi.tumIslemTurleriniGetir().also {
+                    android.util.Log.d("MainActivity", "${it.size} işlem türü yüklendi")
+                }
+            } catch (e: Exception) {
+                android.util.Log.e("MainActivity", "İşlem türleri yüklenirken hata", e)
+                listOf()
+            }
+            
+            // Bölümleri yükle
+            bolumler = try {
+                veritabaniYardimcisi.tumBolumleriGetir().map { it.ad }.also {
+                    android.util.Log.d("MainActivity", "${it.size} bölüm yüklendi")
+                }
+            } catch (e: Exception) {
+                android.util.Log.e("MainActivity", "Bölümler yüklenirken hata", e)
+                listOf()
+            }
+            
+            // Çalışanları yükle
+            tumCalisanlar = try {
+                veritabaniYardimcisi.tumCalisanlariGetir().also {
+                    android.util.Log.d("MainActivity", "${it.size} çalışan yüklendi")
+                }
+            } catch (e: Exception) {
+                android.util.Log.e("MainActivity", "Çalışanlar yüklenirken hata", e)
+                listOf()
+            }
+            
+            // Son seçili çalışanı yükle
+            val sonCalisan = sharedPreferences.getString("son_calisan", "")
+            
+            // Filtrelenmiş çalışanlar başlangıçta tüm çalışanlar olacak
+            if (tumCalisanlar.isNotEmpty()) {
+                filtrelenmisCalısanlar = tumCalisanlar
+            }
+            
+            if (!sonCalisan.isNullOrEmpty()) {
+                actvCalisan.setText(sonCalisan)
+            }
+            
+            // Bugünün tarihini varsayılan olarak ayarla
+            val bugun = Calendar.getInstance()
+            val tarihFormati = SimpleDateFormat("dd/MM/yyyy", Locale("tr", "TR"))
+            seciliTarih = tarihFormati.format(bugun.time)
+            etTarih.setText(seciliTarih)
+            
+            android.util.Log.d("MainActivity", "verileriYukle tamamlandı")
+        } catch (e: Exception) {
+            android.util.Log.e("MainActivity", "Veriler yüklenirken genel hata", e)
+            // Toast mesajı kaldırıldı
         }
-        
-        if (!sonCalisan.isNullOrEmpty()) {
-            actvCalisan.setText(sonCalisan)
-        }
-        
-        // Bugünün tarihini varsayılan olarak ayarla
-        val bugun = Calendar.getInstance()
-        val tarihFormati = SimpleDateFormat("dd/MM/yyyy", Locale("tr", "TR"))
-        seciliTarih = tarihFormati.format(bugun.time)
-        etTarih.setText(seciliTarih)
     }
     
     private fun autoCompleteViewlariAyarla() {
-        // Bölümler için adapter
-        val bolumAdapter = ArrayAdapter(
-            this,
-            android.R.layout.simple_dropdown_item_1line,
-            bolumler
-        )
-        actvBolum.setAdapter(bolumAdapter)
-        
-        // İşlem türleri için adapter
-        val islemTuruAdapter = ArrayAdapter(
-            this,
-            android.R.layout.simple_dropdown_item_1line,
-            islemTurleri.map { it.ad }
-        )
-        actvIslemTuru.setAdapter(islemTuruAdapter)
-        
-        // Çalışanlar için adapter - filtrelenmiş liste kullan
-        val calisanAdapter = ArrayAdapter(
-            this,
-            android.R.layout.simple_dropdown_item_1line,
-            filtrelenmisCalısanlar.map { it.ad }
-        )
-        actvCalisan.setAdapter(calisanAdapter)
+        try {
+            android.util.Log.d("MainActivity", "autoCompleteViewlariAyarla başlıyor")
+            
+            // Bölüm adapterı
+            try {
+                val bolumAdapter = ArrayAdapter(this, android.R.layout.simple_dropdown_item_1line, bolumler)
+                actvBolum.setAdapter(bolumAdapter)
+                actvBolum.inputType = 0 // Klavye açılmaması için
+                actvBolum.isFocusable = false
+                
+                // Son kullanılan bölümü yükle (ilk kullanım değilse)
+                val sonBolum = sharedPreferences.getString("son_bolum", "")
+                if (!sonBolum.isNullOrEmpty() && bolumler.contains(sonBolum)) {
+                    actvBolum.setText(sonBolum, false)
+                    
+                    // Seçilen bölümün çalışanlarını filtrele ve adapterı güncelle
+                    filtrelenmisCalısanlar = tumCalisanlar.filter { it.bolum == sonBolum }
+                    val calisanAdapter = ArrayAdapter(
+                        this,
+                        android.R.layout.simple_dropdown_item_1line,
+                        filtrelenmisCalısanlar.map { it.ad }
+                    )
+                    actvCalisan.setAdapter(calisanAdapter)
+                }
+                
+                android.util.Log.d("MainActivity", "Bölüm adapterı ayarlandı")
+            } catch (e: Exception) {
+                android.util.Log.e("MainActivity", "Bölüm adapterı ayarlanırken hata", e)
+            }
+            
+            // Çalışan adapterı - eğer bölüm seçili değilse boş olacak
+            try {
+                // Bölüm seçili değilse boş liste, seçili ise filtrelenmiş liste kullan
+                val seciliBolum = actvBolum.text.toString()
+                if (seciliBolum.isEmpty()) {
+                    val emptyAdapter = ArrayAdapter(this, android.R.layout.simple_dropdown_item_1line, emptyList<String>())
+                    actvCalisan.setAdapter(emptyAdapter)
+                }
+                
+                actvCalisan.inputType = 0 // Klavye açılmaması için
+                actvCalisan.isFocusable = false
+                
+                // Son kullanılan çalışanı yükle (ilk kullanım değilse ve bölüm seçiliyse)
+                if (seciliBolum.isNotEmpty()) {
+                    val sonCalisan = sharedPreferences.getString("son_calisan", "")
+                    if (!sonCalisan.isNullOrEmpty() && filtrelenmisCalısanlar.any { it.ad == sonCalisan }) {
+                        actvCalisan.setText(sonCalisan, false)
+                    }
+                }
+                
+                android.util.Log.d("MainActivity", "Çalışan adapterı ayarlandı")
+            } catch (e: Exception) {
+                android.util.Log.e("MainActivity", "Çalışan adapterı ayarlanırken hata", e)
+            }
+            
+            // İşlem türü adapterı
+            try {
+                val islemTuruAdapter = ArrayAdapter(this, android.R.layout.simple_dropdown_item_1line, islemTurleri.map { it.ad })
+                actvIslemTuru.setAdapter(islemTuruAdapter)
+                actvIslemTuru.inputType = 0 // Klavye açılmaması için
+                actvIslemTuru.isFocusable = false
+                
+                // Son kullanılan işlem türünü yükle (ilk kullanım değilse)
+                val sonIslemTuru = sharedPreferences.getString("son_islem_turu", "")
+                if (!sonIslemTuru.isNullOrEmpty() && islemTurleri.any { it.ad == sonIslemTuru }) {
+                    actvIslemTuru.setText(sonIslemTuru, false)
+                }
+                
+                android.util.Log.d("MainActivity", "İşlem türü adapterı ayarlandı")
+            } catch (e: Exception) {
+                android.util.Log.e("MainActivity", "İşlem türü adapterı ayarlanırken hata", e)
+            }
+            
+            // Bugünün tarihini ayarla (sadece boşsa)
+            if (etTarih.text.toString().isEmpty()) {
+                try {
+                    val dateFormat = SimpleDateFormat("dd/MM/yyyy", Locale.getDefault())
+                    val bugun = dateFormat.format(Date())
+                    seciliTarih = bugun
+                    etTarih.setText(bugun)
+                    android.util.Log.d("MainActivity", "Tarih ayarlandı: $bugun")
+                } catch (e: Exception) {
+                    android.util.Log.e("MainActivity", "Tarih ayarlanırken hata", e)
+                }
+            }
+            
+            // Miktar alanını her zaman temizle (hatırlanmaması isteniyor)
+            try {
+                etMiktar.setText("") 
+                android.util.Log.d("MainActivity", "Miktar alanı temizlendi")
+            } catch (e: Exception) {
+                android.util.Log.e("MainActivity", "Miktar alanı temizlenirken hata", e)
+            }
+            
+            android.util.Log.d("MainActivity", "autoCompleteViewlariAyarla tamamlandı")
+        } catch (e: Exception) {
+            android.util.Log.e("MainActivity", "AutoComplete viewlar ayarlanırken genel hata", e)
+        }
     }
     
     private fun tarihSeciciGoster() {
@@ -259,14 +422,25 @@ class MainActivity : AppCompatActivity() {
     }
     
     private fun whatsAppGonder() {
-        val calisanAdi = actvCalisan.text.toString().trim()
-        val islemTuru = actvIslemTuru.text.toString().trim()
-        val miktarMetni = etMiktar.text.toString().trim()
-        val birim = etBirim.text.toString().trim()
-        val aciklama = etAciklama.text.toString().trim()
+        // Değerleri oku
+        val tarih = etTarih.text.toString()
+        val bolum = actvBolum.text.toString()
+        val calisanAdi = actvCalisan.text.toString()
+        val islemTuru = actvIslemTuru.text.toString()
+        val miktarMetni = etMiktar.text.toString()
+        val birim = etBirim.text.toString()
+        val aciklama = etAciklama.text.toString()
+        
+        // Son kullanılan değerleri kaydet (daha sonra hatırlanması için)
+        sharedPreferences.edit().apply {
+            putString("son_bolum", bolum)
+            putString("son_calisan", calisanAdi)
+            putString("son_islem_turu", islemTuru)
+            // Miktar kaydedilmiyor - her seferinde elle girilecek
+        }.apply()
         
         // Doğrulama
-        if (seciliTarih.isEmpty() || calisanAdi.isEmpty() || islemTuru.isEmpty() || 
+        if (seciliTarih.isEmpty() || bolum.isEmpty() || calisanAdi.isEmpty() || islemTuru.isEmpty() || 
             miktarMetni.isEmpty() || birim.isEmpty()) {
             Toast.makeText(this, "Lütfen tüm gerekli alanları doldurun", Toast.LENGTH_SHORT).show()
             return
@@ -313,7 +487,7 @@ class MainActivity : AppCompatActivity() {
                 miktar.toString()
             }
             
-            val mesaj = "$seciliTarih | $calisanAdi | $islemTuru | $formatliMiktar | $birim"
+            val mesaj = "$seciliTarih | $bolum | $calisanAdi | $islemTuru | $formatliMiktar | $birim"
             val aciklamaliMesaj = if (aciklama.isNotEmpty()) {
                 "$mesaj | $aciklama"
             } else {
@@ -371,6 +545,22 @@ class MainActivity : AppCompatActivity() {
         // Diğer aktivitelerden döndüğünde verileri yenile
         verileriYukle()
         autoCompleteViewlariAyarla()
+        firmaAdiniGoster() // Firma adını her ekrana dönüşte güncelle
         bottomNavigation.selectedItemId = R.id.nav_kayit
+    }
+    
+    private fun cikisOnayDiyaloguGoster() {
+        AlertDialog.Builder(this)
+            .setTitle("Uygulamadan Çıkış")
+            .setMessage("Kapatmak istediğinize emin misiniz?")
+            .setPositiveButton("Evet") { _, _ ->
+                finishAffinity() // Tüm aktiviteleri kapat
+            }
+            .setNegativeButton("Hayır", null)
+            .show()
+    }
+    
+    override fun onBackPressed() {
+        cikisOnayDiyaloguGoster()
     }
 }

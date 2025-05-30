@@ -1,7 +1,9 @@
 package com.example.performansTakip.ui
 
 import android.app.Activity
+import android.content.DialogInterface
 import android.content.Intent
+import androidx.appcompat.app.AppCompatDelegate
 import android.content.SharedPreferences
 import android.net.Uri
 import android.os.Bundle
@@ -35,7 +37,6 @@ class AyarlarActivity : AppCompatActivity() {
     
     private companion object {
         const val VARSAYILAN_SIFRE = "admin123"
-        const val GELISTIRICI_ADI = "İlyas Yeşil"
     }
     
     private lateinit var veritabaniYardimcisi: VeritabaniYardimcisi
@@ -64,7 +65,6 @@ class AyarlarActivity : AppCompatActivity() {
     private lateinit var etSorumluKisi: TextInputEditText
     private lateinit var btnBolumEkle: MaterialButton
     private lateinit var rvBolumler: RecyclerView
-    private lateinit var tvGelistiriciAdi: TextView
     
     private lateinit var etIslemTuruAdi: TextInputEditText
     private lateinit var etIslemBirimi: TextInputEditText
@@ -76,11 +76,10 @@ class AyarlarActivity : AppCompatActivity() {
     private lateinit var btnFirmaIsmiKaydet: MaterialButton
     
     // Çalışan ekleme için görünümler
-    private lateinit var actvCalisanAdi: AutoCompleteTextView
-    private lateinit var etCalisanBolumu: TextInputEditText
+    private lateinit var etCalisanAdi: TextInputEditText
+    private lateinit var actvCalisanBolumu: AutoCompleteTextView
     private lateinit var btnCalisanEkle: MaterialButton
     private lateinit var rvCalisanlar: RecyclerView
-    private lateinit var calisanlarListAdapter: ArrayAdapter<String>
     
     private lateinit var btnCSVDisaAktar: MaterialButton
     private lateinit var btnCSVIceAktar: MaterialButton
@@ -94,6 +93,12 @@ class AyarlarActivity : AppCompatActivity() {
     
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        
+        // Aydınlık modu zorla - karanlık mod kapalı
+        AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO)
+        
+        // Önce SharedPreferences'i başlat (her şeyden önce yapılmalı)
+        sharedPreferences = getSharedPreferences("performans_takip", MODE_PRIVATE)
         
         // ActivityResult işleyicilerini oluştur
         islemTurleriLauncher = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
@@ -120,109 +125,187 @@ class AyarlarActivity : AppCompatActivity() {
                 }
             }
         }
+        
+        // Layout'u ayarla
         setContentView(R.layout.activity_ayarlar)
-        tvGelistiriciAdi = findViewById(R.id.tvGelistiriciAdi)
-
-
-
-
-        viewlariBaslat()
-        veritabaniniBaslat()
-        adapterleriAyarla()
-        dinleyicileriAyarla()
-        girisKontrolEt()
+        
+        // Sırasıyla işlemleri yap, ama güvenli şekilde
+        try {
+            // Önce tüm view'ları başlat
+            viewlariBaslat()
+            
+            // Sonra veritabanını başlat
+            veritabaniniBaslat()
+            
+            // Dinleyicileri ekle
+            dinleyicileriAyarla()
+            
+            // Veritabanı hazır olduktan sonra adapterleri ayarla
+            adapterleriAyarla()
+            
+            // Giriş kontrolünü yap
+            girisKontrolEt()
+        } catch (e: Exception) {
+            // Hata olursa kullanıcıya bildir ve log'a yaz
+            Log.e("AyarlarActivity", "Başlatma hatası", e)
+            Toast.makeText(this, "Ayarlar yüklenirken bir hata oluştu: ${e.message}", Toast.LENGTH_LONG).show()
+        }
     }
     
     private fun viewlariBaslat() {
-        // Giriş görünümleri
-        loginCard = findViewById(R.id.loginCard)
-        etSifre = findViewById(R.id.etSifre)
-        btnGiris = findViewById(R.id.btnGiris)
-        
-        // Yönetici paneli görünümleri
-        adminPanel = findViewById(R.id.adminPanel)
-        etBolumAdi = findViewById(R.id.etBolumAdi)
-        etSorumluKisi = findViewById(R.id.etSorumluKisi)
-        btnBolumEkle = findViewById(R.id.btnBolumEkle)
-        rvBolumler = findViewById(R.id.rvBolumler)
-        
-        etIslemTuruAdi = findViewById(R.id.etIslemTuruAdi)
-        etIslemBirimi = findViewById(R.id.etIslemBirimi)
-        btnIslemTuruEkle = findViewById(R.id.btnIslemTuruEkle)
-        rvIslemTurleri = findViewById(R.id.rvIslemTurleri)
-        
-        // Firma ayarları görünümleri
-        etFirmaIsmi = findViewById(R.id.etFirmaIsmi)
-        btnFirmaIsmiKaydet = findViewById(R.id.btnFirmaIsmiKaydet)
-        tvGelistiriciAdi = findViewById(R.id.tvGelistiriciAdi)
-        
-        // Şifre değiştirme görünümleri
-        etYeniSifre = findViewById(R.id.etYeniSifre)
-        etYeniSifreTekrar = findViewById(R.id.etYeniSifreTekrar)
-        btnSifreDegistir = findViewById(R.id.btnSifreDegistir)
-        
-        actvCalisanAdi = findViewById(R.id.actvCalisanAdi)
-        etCalisanBolumu = findViewById(R.id.etCalisanBolumu)
-        btnCalisanEkle = findViewById(R.id.btnCalisanEkle)
-        rvCalisanlar = findViewById(R.id.rvCalisanlar)
-        
-        btnCSVDisaAktar = findViewById(R.id.btnCSVDisaAktar)
-        btnCSVIceAktar = findViewById(R.id.btnCSVIceAktar)
-        btnTumVerileriSil = findViewById(R.id.btnTumVerileriSil)
-        
-        bottomNavigation = findViewById(R.id.bottomNavigation)
-        
-        sharedPreferences = getSharedPreferences("app_prefs", MODE_PRIVATE)
-        
-        // Geliştirici adını ayarla
-        tvGelistiriciAdi.text = GELISTIRICI_ADI
-        
-        // Kaydedilmiş firma ismini yükle
-        val firmaIsmi = sharedPreferences.getString("firma_ismi", "")
-        if (!firmaIsmi.isNullOrEmpty()) {
-            etFirmaIsmi.setText(firmaIsmi)
+        try {
+            // Giriş paneli
+            loginCard = findViewById(R.id.loginCard) ?: throw NullPointerException("loginCard bulunamadı")
+            etSifre = findViewById(R.id.etSifre) ?: throw NullPointerException("etSifre bulunamadı")
+            btnGiris = findViewById(R.id.btnGiris) ?: throw NullPointerException("btnGiris bulunamadı")
+            
+            // Şifre değiştirme
+            etYeniSifre = findViewById(R.id.etYeniSifre) ?: throw NullPointerException("etYeniSifre bulunamadı")
+            etYeniSifreTekrar = findViewById(R.id.etYeniSifreTekrar) ?: throw NullPointerException("etYeniSifreTekrar bulunamadı")
+            btnSifreDegistir = findViewById(R.id.btnSifreDegistir) ?: throw NullPointerException("btnSifreDegistir bulunamadı")
+            
+            // Yönetici paneli
+            adminPanel = findViewById(R.id.adminPanel) ?: throw NullPointerException("adminPanel bulunamadı")
+            etBolumAdi = findViewById(R.id.etBolumAdi) ?: throw NullPointerException("etBolumAdi bulunamadı")
+            etSorumluKisi = findViewById(R.id.etSorumluKisi) ?: throw NullPointerException("etSorumluKisi bulunamadı")
+            btnBolumEkle = findViewById(R.id.btnBolumEkle) ?: throw NullPointerException("btnBolumEkle bulunamadı")
+            rvBolumler = findViewById(R.id.rvBolumler) ?: throw NullPointerException("rvBolumler bulunamadı")
+            
+            etIslemTuruAdi = findViewById(R.id.etIslemTuruAdi) ?: throw NullPointerException("etIslemTuruAdi bulunamadı")
+            etIslemBirimi = findViewById(R.id.etIslemBirimi) ?: throw NullPointerException("etIslemBirimi bulunamadı")
+            btnIslemTuruEkle = findViewById(R.id.btnIslemTuruEkle) ?: throw NullPointerException("btnIslemTuruEkle bulunamadı")
+            rvIslemTurleri = findViewById(R.id.rvIslemTurleri) ?: throw NullPointerException("rvIslemTurleri bulunamadı")
+            
+            // Çalışan görünümleri
+            etCalisanAdi = findViewById(R.id.etCalisanAdi) ?: throw NullPointerException("etCalisanAdi bulunamadı")
+            actvCalisanBolumu = findViewById(R.id.actvCalisanBolumu) ?: throw NullPointerException("actvCalisanBolumu bulunamadı")
+            btnCalisanEkle = findViewById(R.id.btnCalisanEkle) ?: throw NullPointerException("btnCalisanEkle bulunamadı")
+            rvCalisanlar = findViewById(R.id.rvCalisanlar) ?: throw NullPointerException("rvCalisanlar bulunamadı")
+            
+            // CSV işlemleri için görünümler
+            btnCSVDisaAktar = findViewById(R.id.btnCSVDisaAktar) ?: throw NullPointerException("btnCSVDisaAktar bulunamadı")
+            btnCSVIceAktar = findViewById(R.id.btnCSVIceAktar) ?: throw NullPointerException("btnCSVIceAktar bulunamadı")
+            
+            // Firma ayarları için görünümler
+            etFirmaIsmi = findViewById(R.id.etFirmaIsmi) ?: throw NullPointerException("etFirmaIsmi bulunamadı")
+            btnFirmaIsmiKaydet = findViewById(R.id.btnFirmaIsmiKaydet) ?: throw NullPointerException("btnFirmaIsmiKaydet bulunamadı")
+            
+            // Tüm verileri silme butonu
+            btnTumVerileriSil = findViewById(R.id.btnTumVerileriSil) ?: throw NullPointerException("btnTumVerileriSil bulunamadı")
+            
+            // Alt gezinme çubuğu
+            bottomNavigation = findViewById(R.id.bottomNavigation) ?: throw NullPointerException("bottomNavigation bulunamadı")
+            
+            // CSV yardımcısını başlat
+            csvYardimcisi = CSVYardimcisi(this)
+            
+            // RecyclerView'ları hazırla
+            rvBolumler.layoutManager = LinearLayoutManager(this)
+            rvIslemTurleri.layoutManager = LinearLayoutManager(this)
+            rvCalisanlar.layoutManager = LinearLayoutManager(this)
+            
+            Log.d("AyarlarActivity", "Tüm viewlar başarıyla başlatıldı")
+        } catch (e: Exception) {
+            Log.e("AyarlarActivity", "Viewlar başlatılırken hata: ${e.message}")
+            throw e  // Yeniden fırlat ki üst metodda yakalansın
         }
     }
     
     private fun veritabaniniBaslat() {
-        veritabaniYardimcisi = VeritabaniYardimcisi(this)
-        csvYardimcisi = CSVYardimcisi(this)
+        try {
+            veritabaniYardimcisi = VeritabaniYardimcisi(this)
+            Log.d("AyarlarActivity", "Veritabanı yardımcısı başarıyla başlatıldı")
+        } catch (e: Exception) {
+            Log.e("AyarlarActivity", "Veritabanı başlatılırken hata", e)
+            Toast.makeText(this, "Veritabanı başlatılırken hata oluştu", Toast.LENGTH_SHORT).show()
+            throw e
+        }
     }
     
     private fun adapterleriAyarla() {
-        // Çalışan adı için dropdown adapter
-        val calisanIsimleri = veritabaniYardimcisi.tumCalisanlariGetir().map { it.ad }.toTypedArray()
-        calisanlarListAdapter = ArrayAdapter(this, android.R.layout.simple_dropdown_item_1line, calisanIsimleri)
-        actvCalisanAdi.setAdapter(calisanlarListAdapter)
+        Log.d("AyarlarActivity", "adapterleriAyarla başlıyor")
         
-        bolumlerAdapter = BolumlerAdapter { bolum ->
-            silmeOnayDialoguGoster {
-                veritabaniYardimcisi.bolumSil(bolum.id)
-                bolumleriYukle()
+        // Bölüm dropdown için adapter
+        try {
+            val bolumAdlari = veritabaniYardimcisi.tumBolumleriGetir().map { it.ad }.toTypedArray()
+            val bolumAdapter = ArrayAdapter(this, android.R.layout.simple_dropdown_item_1line, bolumAdlari)
+            actvCalisanBolumu.setAdapter(bolumAdapter)
+            actvCalisanBolumu.inputType = 0 // Klavye açılmaması için
+            actvCalisanBolumu.isFocusable = false
+            Log.d("AyarlarActivity", "Bölüm dropdown adapteri başarıyla ayarlandı")
+        } catch (e: Exception) {
+            Log.e("AyarlarActivity", "Bölüm dropdown adapteri ayarlanırken hata", e)
+            Toast.makeText(this, "Bölüm listesi yüklenirken bir hata oluştu", Toast.LENGTH_SHORT).show()
+        }
+        
+        // Bölümler RecyclerView adapteri
+        try {
+            bolumlerAdapter = BolumlerAdapter { bolum ->
+                silmeOnayDialoguGoster {
+                    veritabaniYardimcisi.bolumSil(bolum.id)
+                    bolumleriYukle()
+                }
             }
+            
+            rvBolumler.adapter = bolumlerAdapter
+            Log.d("AyarlarActivity", "Bölümler adapteri başarıyla ayarlandı")
+        } catch (e: Exception) {
+            Log.e("AyarlarActivity", "Bölümler adapteri ayarlanırken hata", e)
+            Toast.makeText(this, "Bölümler listesi yüklenirken bir hata oluştu", Toast.LENGTH_SHORT).show()
         }
         
-        rvBolumler.apply {
-            adapter = bolumlerAdapter
-            layoutManager = LinearLayoutManager(this@AyarlarActivity)
-        }
-        
-        islemTurleriAdapter = IslemTurleriAdapter { islemTuru ->
-            silmeOnayDialoguGoster {
-                veritabaniYardimcisi.islemTuruSil(islemTuru.id)
-                islemTurleriniYukle()
+        // İşlem türleri RecyclerView adapteri
+        try {
+            islemTurleriAdapter = IslemTurleriAdapter { islemTuru ->
+                silmeOnayDialoguGoster {
+                    veritabaniYardimcisi.islemTuruSil(islemTuru.id)
+                    islemTurleriniYukle()
+                }
             }
+            
+            rvIslemTurleri.adapter = islemTurleriAdapter
+            Log.d("AyarlarActivity", "İşlem türleri adapteri başarıyla ayarlandı")
+        } catch (e: Exception) {
+            Log.e("AyarlarActivity", "İşlem türleri adapteri ayarlanırken hata", e)
+            Toast.makeText(this, "İşlem türleri listesi yüklenirken bir hata oluştu", Toast.LENGTH_SHORT).show()
         }
         
-        rvIslemTurleri.apply {
-            adapter = islemTurleriAdapter
-            layoutManager = LinearLayoutManager(this@AyarlarActivity)
+        // Çalışanlar RecyclerView adapteri
+        try {
+            calisanlarAdapter = CalisanlarAdapter(mutableListOf()) { calisan ->
+                silmeCalisanOnayDialoguGoster {
+                    veritabaniYardimcisi.calisanSil(calisan.id)
+                    calisanlariYukle()
+                }
+            }
+            
+            rvCalisanlar.adapter = calisanlarAdapter
+            Log.d("AyarlarActivity", "Çalışanlar adapteri başarıyla ayarlandı")
+        } catch (e: Exception) {
+            Log.e("AyarlarActivity", "Çalışanlar adapteri ayarlanırken hata", e)
+            Toast.makeText(this, "Çalışanlar listesi yüklenirken bir hata oluştu", Toast.LENGTH_SHORT).show()
         }
         
-        calisanlariYukle()
+        // Verileri yükle - her birini ayrı try-catch içinde yap
+        try {
+            bolumleriYukle()
+        } catch (e: Exception) {
+            Log.e("AyarlarActivity", "Bölümleri yüklerken hata", e)
+        }
         
-        bolumleriYukle()
-        islemTurleriniYukle()
+        try {
+            islemTurleriniYukle()
+        } catch (e: Exception) {
+            Log.e("AyarlarActivity", "İşlem türlerini yüklerken hata", e)
+        }
+        
+        try {
+            calisanlariYukle()
+        } catch (e: Exception) {
+            Log.e("AyarlarActivity", "Çalışanları yüklerken hata", e)
+        }
+        
+        Log.d("AyarlarActivity", "adapterleriAyarla tamamlandı")
     }
     
     private fun dinleyicileriAyarla() {
@@ -389,28 +472,28 @@ class AyarlarActivity : AppCompatActivity() {
     }
     
     private fun calisanEkle() {
-        val calisanAdi = actvCalisanAdi.text.toString().trim()
-        val bolum = etCalisanBolumu.text.toString().trim()
+        val calisanAdi = etCalisanAdi.text.toString().trim()
+        val calisanBolumu = actvCalisanBolumu.text.toString().trim()
         
-        if (calisanAdi.isEmpty()) {
-            Toast.makeText(this, "Çalışan adı boş olamaz", Toast.LENGTH_SHORT).show()
+        if (calisanAdi.isEmpty() || calisanBolumu.isEmpty()) {
+            Toast.makeText(this, "Lütfen tüm alanları doldurun", Toast.LENGTH_SHORT).show()
             return
         }
         
-        val calisan = Calisan(ad = calisanAdi, bolum = bolum)
+        val calisan = Calisan(ad = calisanAdi, bolum = calisanBolumu)
         val eklenenId = veritabaniYardimcisi.calisanEkle(calisan)
         
         if (eklenenId > 0) {
-            Toast.makeText(this, "Çalışan eklendi: $calisanAdi", Toast.LENGTH_SHORT).show()
-            calisanlariYukle()
-            calisanlarDropdownGuncelle() // Dropdown listesini güncelle
-            
+            Toast.makeText(this, "Çalışan başarıyla eklendi", Toast.LENGTH_SHORT).show()
+            etCalisanAdi.setText("")
+            actvCalisanBolumu.setText("")
             // Alanları temizle
-            actvCalisanAdi.setText("") 
-            etCalisanBolumu.text?.clear()
+            etCalisanAdi.text?.clear()
+            actvCalisanBolumu.setText("")
         } else {
             Toast.makeText(this, "Çalışan eklenirken hata oluştu", Toast.LENGTH_SHORT).show()
         }
+        calisanlarDropdownGuncelle() // Dropdown listesini güncelle
     }
     
     private fun bolumleriYukle() {
@@ -442,10 +525,22 @@ class AyarlarActivity : AppCompatActivity() {
     }
     
     private fun calisanlarDropdownGuncelle() {
-        // Dropdown için çalışan adlarını güncelle
-        val calisanIsimleri = veritabaniYardimcisi.tumCalisanlariGetir().map { it.ad }.toTypedArray()
-        calisanlarListAdapter = ArrayAdapter(this, android.R.layout.simple_dropdown_item_1line, calisanIsimleri)
-        actvCalisanAdi.setAdapter(calisanlarListAdapter)
+        try {
+            val bolumIsimleri = veritabaniYardimcisi.tumBolumleriGetir().map { it.ad }.toTypedArray()
+            if (bolumIsimleri.isNotEmpty()) {
+                val bolumlerListAdapter = ArrayAdapter(this, android.R.layout.simple_dropdown_item_1line, bolumIsimleri)
+                actvCalisanBolumu.setAdapter(bolumlerListAdapter)
+                actvCalisanBolumu.inputType = 0 // Klavye açılmaması için
+                actvCalisanBolumu.isFocusable = false
+                Log.d("AyarlarActivity", "Dropdown güncellendi, ${bolumIsimleri.size} bölüm yüklendi")
+            } else {
+                Log.d("AyarlarActivity", "Dropdown güncellenirken dikkat: Bölüm listesi boş")
+                Toast.makeText(this, "Bölüm listesi boş, lütfen önce bölüm ekleyin", Toast.LENGTH_SHORT).show()
+            }
+        } catch (e: Exception) {
+            Log.e("AyarlarActivity", "Bölüm dropdown'u güncellenirken hata", e)
+            Toast.makeText(this, "Bölüm listesi güncellenirken hata oluştu", Toast.LENGTH_SHORT).show()
+        }
     }
     
     private fun bolumleriDisaAktar() {
@@ -603,9 +698,11 @@ class AyarlarActivity : AppCompatActivity() {
             return
         }
         
-        // Firma ismini SharedPreferences'a kaydet
         sharedPreferences.edit().putString("firma_ismi", firmaIsmi).apply()
-        Toast.makeText(this, "Firma ismi kaydedildi: $firmaIsmi", Toast.LENGTH_SHORT).show()
+        Toast.makeText(this, "Firma ismi kaydedildi", Toast.LENGTH_SHORT).show()
+        etFirmaIsmi.clearFocus()
+        
+        // Ana ekran, firma adını görüntüleyecek
     }
     
     private fun tumVerileriSil() {
@@ -646,6 +743,8 @@ class AyarlarActivity : AppCompatActivity() {
         super.onResume()
         bottomNavigation.selectedItemId = R.id.nav_ayarlar
     }
+    
+    // Firma adı sadece ana ekranda gösterilecek
     
     override fun onPause() {
         super.onPause()

@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Karanlık Mod Renk Şeması -->
+    <color name="colorPrimary">#263238</color>
+    <color name="colorPrimaryDark">#1A2327</color>
+    <color name="colorAccent">#FFC107</color>
+    <color name="colorBackground">#121212</color>
+    <color name="colorCardBackground">#1E1E1E</color>
+    <color name="colorText">#E0E0E0</color>
+    <color name="colorSecondaryText">#B0BEC5</color>
+    <color name="colorDivider">#424242</color>
+    <color name="colorSuccess">#4CAF50</color>
+    <color name="colorError">#F44336</color>
+    <color name="colorWarning">#FFC107</color>
+    
+    <!-- Yeni Eklenen Vurgu Renkleri -->
+    <color name="colorHighlight">#FFC107</color>
+    <color name="colorLightAccent">#3D3523</color>
+    <color name="colorDarkAccent">#FFC107</color>
+    <color name="colorGradientStart">#1A2327</color>
+    <color name="colorGradientEnd">#263238</color>
+</resources>

@@ -48,6 +48,8 @@ dependencies {
     implementation 'androidx.appcompat:appcompat:1.6.1'
     implementation 'com.google.android.material:material:1.11.0'
     implementation 'androidx.constraintlayout:constraintlayout:2.1.4'
+    // Grafik kütüphanesi
+    implementation 'com.github.PhilJay:MPAndroidChart:v3.1.0'
     // Windsurf bağımlılıkları bulunamadığı için kaldırıldı
     // implementation 'com.windsurf:windsurf-core:1.0.0'
     // implementation 'com.windsurf:windsurf-ui:1.0.0'

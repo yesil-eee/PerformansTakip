@@ -16,6 +16,7 @@ import com.google.android.material.bottomnavigation.BottomNavigationView
 import android.app.Activity
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.appcompat.app.AppCompatDelegate
 class OzetActivity : AppCompatActivity() {
     
     private lateinit var veritabaniYardimcisi: VeritabaniYardimcisi
@@ -35,6 +36,10 @@ class OzetActivity : AppCompatActivity() {
     
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        
+        // Aydınlık modu zorla - karanlık mod kapalı
+        AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO)
+        
         setContentView(R.layout.activity_ozet)
         tvGelistiriciAdi = findViewById(R.id.tvGelistiriciAdi)
         
@@ -88,7 +93,7 @@ class OzetActivity : AppCompatActivity() {
                     true
                 }
                 R.id.nav_cikis -> {
-                    finish()
+                    finishAffinity() // Tüm aktiviteleri kapat
                     true
                 }
                 else -> false

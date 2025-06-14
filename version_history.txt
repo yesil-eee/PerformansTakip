@@ -3,3 +3,4 @@ Cum 30.05.2025 13:48:27,77 - Minor guncelleme:  -> .1.0 - OK
 Cum 30.05.2025 15:31:46,21 - Patch guncelleme:  -> ..1 - github entegrasyonlu 
 Cum 30.05.2025 18:45:25,34 - Patch guncelleme:  -> ..1 - Karanlk mod sorunu dzeltme 
 Cum 30.05.2025 22:01:33,73 - Patch guncelleme:  -> ..1 - OK 
+Cmt 14.06.2025 20:30:12,25 - Patch guncelleme:  -> ..1 - Calisan Surum 14/06/2025 ˜Y 
